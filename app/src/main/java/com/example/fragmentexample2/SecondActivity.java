@@ -1,44 +1,35 @@
 package com.example.fragmentexample2;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
-    private Button mButton;
+public class SecondActivity extends AppCompatActivity {
+
     private Boolean isFragmentDisplayed = false;
     static final String STATE_FRAGMENT = "state_of_fragment";
-
-
-
+    private Button mButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mButton = findViewById(R.id.open_button);
+        setContentView(R.layout.activity_second);
+        mButton = findViewById(R.id.next_button);
+        Intent intent = getIntent();
 
         if (savedInstanceState != null) {
             isFragmentDisplayed =
                     savedInstanceState.getBoolean(STATE_FRAGMENT);
             if (isFragmentDisplayed) {
 
-                mButton.setText(R.string.close);
+                mButton.setText(R.string.prev);
             }
         }
-
-
-
-
     }
-
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
@@ -49,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void displayFragment() {
         SimpleFragment simpleFragment = SimpleFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -56,12 +48,12 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction();
         fragmentTransaction.add(R.id.fragment_container,
                 simpleFragment).addToBackStack(null).commit();
-        mButton.setText(R.string.close);
+        mButton.setText(R.string.prev);
         isFragmentDisplayed = true;
 
     }
 
-    public void closeFragment() {
+    public void prevFragment() {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -74,21 +66,25 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.remove(simpleFragment).commit();
         }
 
-        mButton.setText(R.string.open);
+        mButton.setText(R.string.next);
 
         isFragmentDisplayed = false;
     }
 
-    public void onClick(View view) {
+    public void launchSecondActivity(View view) {
+
         if (!isFragmentDisplayed) {
             displayFragment();
         } else {
-            closeFragment();
+           prevFragment();
         }
     }
 
-    public void launchSecondActivity(View view) {
-        Intent intent = new Intent(this, SecondActivity.class);
-        startActivity(intent);
+    public void returnReply(View view)
+    {
+        Intent replyIntent = new Intent();
+        setResult(RESULT_OK, replyIntent);
+        finish();
     }
+
 }
